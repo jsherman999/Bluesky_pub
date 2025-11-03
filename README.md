@@ -2,6 +2,34 @@
 
 # Bluesky Post Summary Reporter
 
+A tool for fetching recent posts from Bluesky users with both a **web interface** and command-line scripts. View posts with engagement metrics in an easy-to-read format with clickable URLs.
+
+## Web Interface (Recommended)
+
+The easiest way to use this tool is through the web interface. Simply enter a Bluesky handle and view posts in a beautiful, easy-to-read format.
+
+### Quick Start
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the web server
+python app.py
+```
+
+Then open your browser to: http://localhost:5000
+
+### Features
+- 🎨 Beautiful, responsive web interface
+- 🔍 Search by handle (username.bsky.social or @username)
+- 📊 View engagement metrics (likes, reposts, replies, quotes)
+- 🔗 Clickable URLs that take you directly to Bluesky posts
+- 👤 User profile information with stats
+- 📱 Mobile-friendly design
+
+## Command Line Scripts
+
 A Python script that fetches recent posts from a Bluesky user and generates a summary report in JSON or CSV format.
 
 ## Features
@@ -16,6 +44,15 @@ A Python script that fetches recent posts from a Bluesky user and generates a su
   - Engagement metrics (likes, reposts, replies, quotes)
   - Post URI
 
+### API Endpoint
+
+The web interface also provides a JSON API endpoint:
+
+```bash
+# Get JSON data for a user
+curl http://localhost:5000/api/report/bsky.app?limit=50
+```
+
 ## Installation
 
 1. Install the required dependencies:
@@ -24,10 +61,14 @@ A Python script that fetches recent posts from a Bluesky user and generates a su
 pip install -r requirements.txt
 ```
 
+This installs:
+- `Flask` - Web framework for the web interface
+- `requests` - HTTP library for API calls
+
 Or manually install:
 
 ```bash
-pip install requests
+pip install Flask requests
 ```
 
 ## Usage

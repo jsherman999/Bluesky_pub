@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bluesky Post Reporter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 50px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .bluesky-logo {
+            text-align: center;
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-hint {
+            color: #888;
+            font-size: 0.85em;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            background: #fee;
+            border: 2px solid #fcc;
+            color: #c33;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .examples {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+
+        .examples h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .examples ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .examples li {
+            color: #666;
+            margin: 8px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .examples li:hover {
+            background: #e8e8e8;
+        }
+
+        .examples code {
+            color: #667eea;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="bluesky-logo">☁️</div>
+        <h1>Bluesky Post Reporter</h1>
+        <p class="subtitle">View posts and engagement metrics for any Bluesky user</p>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="/report">
+            <div class="form-group">
+                <label for="handle">Bluesky Handle</label>
+                <input
+                    type="text"
+                    id="handle"
+                    name="handle"
+                    placeholder="username.bsky.social or @username"
+                    required
+                    autofocus
+                >
+                <span class="input-hint">Enter a Bluesky handle (e.g., bsky.app or @username)</span>
+            </div>
+
+            <div class="form-group">
+                <label for="limit">Number of Posts</label>
+                <input
+                    type="number"
+                    id="limit"
+                    name="limit"
+                    value="50"
+                    min="1"
+                    max="200"
+                    required
+                >
+                <span class="input-hint">Maximum number of posts to fetch (1-200)</span>
+            </div>
+
+            <button type="submit">Get Posts</button>
+        </form>
+
+        <div class="examples">
+            <h3>Example Handles</h3>
+            <ul>
+                <li onclick="fillHandle('bsky.app')"><code>bsky.app</code> - Official Bluesky account</li>
+                <li onclick="fillHandle('jay.bsky.team')"><code>jay.bsky.team</code> - Jay (CEO)</li>
+                <li onclick="fillHandle('pfrazee.com')"><code>pfrazee.com</code> - Paul Frazee</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function fillHandle(handle) {
+            document.getElementById('handle').value = handle;
+        }
+    </script>
+</body>
+</html>

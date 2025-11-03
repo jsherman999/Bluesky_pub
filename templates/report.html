@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ result.user.displayName or result.user.handle }} - Bluesky Posts</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            object-fit: cover;
+        }
+
+        .user-info h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .user-handle {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .user-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 15px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            background: white;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .back-link a:hover {
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .posts-header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .posts-header h2 {
+            color: #333;
+        }
+
+        .post-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .post-date {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .post-text {
+            color: #333;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .post-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            background: #f0f0ff;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            transition: background 0.2s;
+        }
+
+        .post-link:hover {
+            background: #e0e0ff;
+        }
+
+        .engagement {
+            display: flex;
+            gap: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .engagement-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .engagement-icon {
+            font-size: 1.2em;
+        }
+
+        .engagement-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .no-posts {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 10px;
+            color: #888;
+        }
+
+        .no-posts-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .user-stats {
+                justify-content: center;
+            }
+
+            .engagement {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="back-link">
+        <a href="/">← Search Another User</a>
+    </div>
+
+    <div class="header">
+        <div class="header-content">
+            {% if result.user.avatar %}
+            <img src="{{ result.user.avatar }}" alt="Avatar" class="avatar">
+            {% else %}
+            <div class="avatar" style="background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 2em;">☁️</div>
+            {% endif %}
+            <div class="user-info">
+                <h1>{{ result.user.displayName or result.user.handle }}</h1>
+                <div class="user-handle">@{{ result.user.handle }}</div>
+                <div class="user-stats">
+                    <div class="stat">
+                        <div class="stat-value">{{ result.user.postsCount }}</div>
+                        <div class="stat-label">Posts</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">{{ result.user.followersCount }}</div>
+                        <div class="stat-label">Followers</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">{{ result.user.followsCount }}</div>
+                        <div class="stat-label">Following</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="posts-header">
+            <h2>Recent Posts ({{ result.post_count }})</h2>
+        </div>
+
+        {% if result.posts %}
+            {% for post in result.posts %}
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="post-date">
+                        {{ post.relative_date }} • {{ post.post_date }}
+                    </div>
+                </div>
+
+                <div class="post-text">{{ post.text }}</div>
+
+                {% if post.post_url %}
+                <a href="{{ post.post_url }}" target="_blank" class="post-link">
+                    View on Bluesky →
+                </a>
+                {% endif %}
+
+                <div class="engagement">
+                    <div class="engagement-item">
+                        <span class="engagement-icon">❤️</span>
+                        <span class="engagement-value">{{ post.likes }}</span>
+                        <span>{{ 'like' if post.likes == 1 else 'likes' }}</span>
+                    </div>
+                    <div class="engagement-item">
+                        <span class="engagement-icon">🔄</span>
+                        <span class="engagement-value">{{ post.reposts }}</span>
+                        <span>{{ 'repost' if post.reposts == 1 else 'reposts' }}</span>
+                    </div>
+                    <div class="engagement-item">
+                        <span class="engagement-icon">💬</span>
+                        <span class="engagement-value">{{ post.replies }}</span>
+                        <span>{{ 'reply' if post.replies == 1 else 'replies' }}</span>
+                    </div>
+                    <div class="engagement-item">
+                        <span class="engagement-icon">💭</span>
+                        <span class="engagement-value">{{ post.quotes }}</span>
+                        <span>{{ 'quote' if post.quotes == 1 else 'quotes' }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-posts">
+                <div class="no-posts-icon">📭</div>
+                <h2>No posts found</h2>
+                <p>This user hasn't posted anything yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
